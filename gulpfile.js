@@ -12,6 +12,10 @@ import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
 import imagemin from 'gulp-imagemin';
 import htmlmin from 'gulp-htmlmin';
+import size from 'gulp-size';
+import newer from 'gulp-newer';
+import browserSync from 'browser-sync';
+const browsersync = browserSync.create();
 
 const path = {
   html: {
@@ -27,13 +31,13 @@ const path = {
     dest: 'dist/js/',
   },
   img: {
-    src: 'src/assets/img/*',
+    src: 'src/assets/img/**/*.*',
     dest: 'dist/assets/img/',
   },
 };
 
 function clean() {
-  return del(['dist']);
+  return del(['dist/*', '!dist/assets', '!dist/assets/img']);
 }
 
 function styles() {
@@ -53,12 +57,14 @@ function styles() {
     )
     .pipe(
       rename({
-        basename: 'min',
+        basename: 'main',
         suffix: '.min',
       })
     )
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(path.styles.dest));
+    .pipe(size())
+    .pipe(gulp.dest(path.styles.dest))
+    .pipe(browsersync.stream());
 }
 
 function scripts() {
@@ -71,19 +77,23 @@ function scripts() {
       })
     )
     .pipe(uglify())
-    .pipe(concat('man.min.js'))
+    .pipe(concat('main.min.js'))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(path.scripts.dest));
+    .pipe(size())
+    .pipe(gulp.dest(path.scripts.dest))
+    .pipe(browsersync.stream());
 }
 
 function img() {
   return gulp
     .src(path.img.src)
+    .pipe(newer(path.img.dest))
     .pipe(
       imagemin({
         progressive: true,
       })
     )
+    .pipe(size())
     .pipe(gulp.dest(path.img.dest));
 }
 
@@ -91,12 +101,22 @@ function html() {
   return gulp
     .src(path.html.src)
     .pipe(htmlmin({ collapseWhitespace: true }))
-    .pipe(gulp.dest(path.html.dest));
+    .pipe(size())
+    .pipe(gulp.dest(path.html.dest))
+    .pipe(browsersync.stream());
 }
 
 function watch() {
+  browsersync.init({
+    server: {
+      baseDir: './dist/',
+    },
+  });
+  gulp.watch(path.html.dest).on('change', browsersync.reload);
+  gulp.watch(path.html.src, html);
   gulp.watch(path.styles.src, styles);
   gulp.watch(path.scripts.src, scripts);
+  gulp.watch(path.img.src, img);
 }
 
 const build = gulp.series(
