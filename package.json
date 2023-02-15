@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/nyaremiiy/gulp-template#readme",
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "del": "^7.0.0",
+    "gulp": "^4.0.2",
+    "scss": "^0.2.4"
   }
 }
