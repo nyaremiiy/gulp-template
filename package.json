@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/nyaremiiy/gulp-template/issues"
   },
-  "homepage": "https://github.com/nyaremiiy/gulp-template#readme"
+  "homepage": "https://github.com/nyaremiiy/gulp-template#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
 }
