@@ -10,8 +10,14 @@ import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
+import imagemin from 'gulp-imagemin';
+import htmlmin from 'gulp-htmlmin';
 
 const path = {
+  html: {
+    src: 'src/*.html',
+    dest: 'dist/',
+  },
   styles: {
     src: 'src/styles/**/*.scss',
     dest: 'dist/css/',
@@ -19,6 +25,10 @@ const path = {
   scripts: {
     src: 'src/scripts/**/*.js',
     dest: 'dist/js/',
+  },
+  img: {
+    src: 'src/assets/img/*',
+    dest: 'dist/assets/img/',
   },
 };
 
@@ -66,11 +76,34 @@ function scripts() {
     .pipe(gulp.dest(path.scripts.dest));
 }
 
+function img() {
+  return gulp
+    .src(path.img.src)
+    .pipe(
+      imagemin({
+        progressive: true,
+      })
+    )
+    .pipe(gulp.dest(path.img.dest));
+}
+
+function html() {
+  return gulp
+    .src(path.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(path.html.dest));
+}
+
 function watch() {
   gulp.watch(path.styles.src, styles);
   gulp.watch(path.scripts.src, scripts);
 }
 
-const build = gulp.series(clean, gulp.parallel(styles, scripts), watch);
+const build = gulp.series(
+  clean,
+  html,
+  gulp.parallel(styles, scripts, img),
+  watch
+);
 
 export default build;
