@@ -8,6 +8,8 @@ import rename from 'gulp-rename';
 import babel from 'gulp-babel';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
+import sourcemaps from 'gulp-sourcemaps';
+import autoprefixer from 'gulp-autoprefixer';
 
 const path = {
   styles: {
@@ -27,25 +29,40 @@ function clean() {
 function styles() {
   return gulp
     .src(path.styles.src)
+    .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
-    .pipe(cleanCSS())
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      })
+    )
+    .pipe(
+      cleanCSS({
+        level: 2,
+      })
+    )
     .pipe(
       rename({
         basename: 'min',
         suffix: '.min',
       })
     )
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(path.styles.dest));
 }
 
 function scripts() {
   return gulp
-    .src(path.scripts.src, {
-      sourcemaps: true,
-    })
-    .pipe(babel())
+    .src(path.scripts.src)
+    .pipe(sourcemaps.init())
+    .pipe(
+      babel({
+        presets: ['@babel/env'],
+      })
+    )
     .pipe(uglify())
     .pipe(concat('man.min.js'))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(path.scripts.dest));
 }
 
