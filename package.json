@@ -1,0 +1,20 @@
+{
+  "name": "gulp-template",
+  "version": "1.0.0",
+  "description": "Gulp template",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyaremiiy/gulp-template.git"
+  },
+  "keywords": [],
+  "author": "Nazar Yaremiiy <nazar.yaremiiy@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nyaremiiy/gulp-template/issues"
+  },
+  "homepage": "https://github.com/nyaremiiy/gulp-template#readme"
+}
