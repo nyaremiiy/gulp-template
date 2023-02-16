@@ -16,8 +16,13 @@ import size from 'gulp-size';
 import newer from 'gulp-newer';
 import browserSync from 'browser-sync';
 const browsersync = browserSync.create();
+import gulpPug from 'gulp-pug';
 
 const path = {
+  pug: {
+    src: 'src/*.pug',
+    dest: 'dist/',
+  },
   html: {
     src: 'src/*.html',
     dest: 'dist/',
@@ -97,6 +102,14 @@ function img() {
     .pipe(gulp.dest(path.img.dest));
 }
 
+function pug() {
+  return gulp
+    .src(path.pug.src)
+    .pipe(gulpPug())
+    .pipe(size())
+    .pipe(gulp.dest(path.pug.dest))
+    .pipe(browsersync.stream());
+}
 function html() {
   return gulp
     .src(path.html.src)
